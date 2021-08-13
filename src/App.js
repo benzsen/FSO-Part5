@@ -11,7 +11,7 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-//  const [errorMessage, setErrorMessage] = useState(null)
+  //const [errorMessage, setErrorMessage] = useState(null)
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -21,7 +21,7 @@ const App = () => {
   const [updateList, triggerUpdateList] = useState("")
   const [notifClass, setNotifClass] = useState('')
   const [notifMessage, setNotifMessage] = useState('')
-  const [loginVisible, setLoginVisible] = useState(false)
+  //const [loginVisible, setLoginVisible] = useState(false)
   const [likes, setLikes] = useState('')
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const App = () => {
     event.preventDefault()
 
     try {
-     const user = blogService.create({
+     blogService.create({
        title, author, url
      }).then(res=>{
        triggerUpdateList(res)
@@ -90,8 +90,10 @@ const App = () => {
      //event.preventDefault()
      const likedBlog = await blogService.getByBlogId(blogId)
      likedBlog.likes += 1
-     setLikes(likedBlog.likes)
+     const user = likedBlog.user._id
+     likedBlog.user =  user
      const updateLike = await blogService.updateBlog(blogId, likedBlog)
+     setLikes(likedBlog.likes)
    }
 
 //Attemp to switch to async/await

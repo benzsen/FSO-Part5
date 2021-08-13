@@ -30,7 +30,7 @@ const create = async ({title, author, url}) => {
   const config = {
     headers: { Authorization: token },
   }
-  const request = await axios.post(baseUrl, {title, author, url}, config);
+  await axios.post(baseUrl, {title, author, url}, config);
 }
 
 export default { getAll, getByBlogId, create, setToken, updateBlog}
