@@ -14,10 +14,16 @@ const getAll = () => {
     return response.data})
 }
 
-const getByUser = (userId) => {
-  const request = axios.get(baseUrl + userId);
-  return request.then(response => {
-    return response.data})
+const getByBlogId = (blogId) => {
+  const request = axios.get(baseUrl + blogId);
+  return request
+    .then(response => response.data)
+}
+
+const updateBlog = (blogId, body) => {
+  const request = axios.put(baseUrl + blogId, body);
+  return request
+    .then(response => response.data)
 }
 
 const create = async ({title, author, url}) => {
@@ -27,4 +33,4 @@ const create = async ({title, author, url}) => {
   const request = await axios.post(baseUrl, {title, author, url}, config);
 }
 
-export default { getAll, getByUser, create, setToken}
+export default { getAll, getByBlogId, create, setToken, updateBlog}

@@ -1,5 +1,5 @@
 //Completed 5.1-5.4
-//Completed 5.5-5.6
+//Completed 5.5-5.8
 
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
@@ -22,13 +22,14 @@ const App = () => {
   const [notifClass, setNotifClass] = useState('')
   const [notifMessage, setNotifMessage] = useState('')
   const [loginVisible, setLoginVisible] = useState(false)
+  const [likes, setLikes] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>{
       setBlogs(blogs)
       triggerUpdateList("")
     })
-  }, [user, updateList])
+  }, [user, updateList, likes])
 
 //Check user saved in local storage
   useEffect(() => {
@@ -82,7 +83,16 @@ const App = () => {
        setTimeout(() => {
           setNotifMessage(null)
       }, 5000)
-   }}
+   }
+ }
+
+   const handleLike = async(blogId) => {
+     //event.preventDefault()
+     const likedBlog = await blogService.getByBlogId(blogId)
+     likedBlog.likes += 1
+     setLikes(likedBlog.likes)
+     const updateLike = await blogService.updateBlog(blogId, likedBlog)
+   }
 
 //Attemp to switch to async/await
    // const handleLogin = async (event) => {
@@ -171,10 +181,18 @@ const App = () => {
       handleTitleChange={({ target }) => setTitle(target.value)}
       handleAuthorChange={({ target }) => setAuthor(target.value)}
       handleUrlChange={({ target }) => setUrl(target.value)}
+
       />
     </Togglable>
     {blogs.map(blog =>{
-      return <Blog key={blog.id} blog={blog} />
+      return(
+          <Blog
+          key={blog.id}
+          blog={blog}
+          handleLike={handleLike}
+          />
+
+      )
     })}
     </div>
   )
