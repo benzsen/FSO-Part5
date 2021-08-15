@@ -1,5 +1,5 @@
 //Completed 5.1-5.4
-//Completed 5.5-5.8
+//Completed 5.5-5.10
 
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
@@ -8,10 +8,8 @@ import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
-
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  //const [errorMessage, setErrorMessage] = useState(null)
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -21,15 +19,14 @@ const App = () => {
   const [updateList, triggerUpdateList] = useState("")
   const [notifClass, setNotifClass] = useState('')
   const [notifMessage, setNotifMessage] = useState('')
-  //const [loginVisible, setLoginVisible] = useState(false)
-  const [likes, setLikes] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>{
+      blogs.sort((a,b) => b.likes-a.likes)
       setBlogs(blogs)
-      triggerUpdateList("")
+      //triggerUpdateList("")
     })
-  }, [user, updateList, likes])
+  }, [user, updateList])
 
 //Check user saved in local storage
   useEffect(() => {
@@ -83,8 +80,8 @@ const App = () => {
        setTimeout(() => {
           setNotifMessage(null)
       }, 5000)
-   }
- }
+    }
+  }
 
    const handleLike = async(blogId) => {
      //event.preventDefault()
@@ -93,8 +90,17 @@ const App = () => {
      const user = likedBlog.user._id
      likedBlog.user =  user
      const updateLike = await blogService.updateBlog(blogId, likedBlog)
-     setLikes(likedBlog.likes)
+     triggerUpdateList(updateLike)
    }
+
+    const handleDelete = async(blogId) => {
+      if(window.confirm("Are you sure you want to delete the blog?"))
+      {
+        const removeBlog = await blogService.remove(blogId)
+        triggerUpdateList(removeBlog)
+        window.confirm("Blog Deleted")
+      }
+    }
 
 //Attemp to switch to async/await
    // const handleLogin = async (event) => {
@@ -183,17 +189,17 @@ const App = () => {
       handleTitleChange={({ target }) => setTitle(target.value)}
       handleAuthorChange={({ target }) => setAuthor(target.value)}
       handleUrlChange={({ target }) => setUrl(target.value)}
-
       />
     </Togglable>
     {blogs.map(blog =>{
       return(
           <Blog
+          user={user}
           key={blog.id}
           blog={blog}
           handleLike={handleLike}
+          handleDelete={handleDelete}
           />
-
       )
     })}
     </div>

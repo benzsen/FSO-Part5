@@ -1,7 +1,9 @@
 import React from 'react'
 import Togglable from './Togglable'
+import DeleteButton from './DeleteButton'
 
-const Blog = ({blog, handleLike}) => {
+const Blog = ({user, blog, handleLike, handleDelete}) => {
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -15,15 +17,20 @@ const Blog = ({blog, handleLike}) => {
         <div>{blog.title + " "}
           <Togglable buttonLabel="view">
             <br></br>
-            <a>{blog.url}</a>
+            <span>{blog.url}</span>
             <br></br>
-            <a>
+            <span>
               Likes: {blog.likes + " "}
               <button onClick={()=>handleLike(blog.id)}>like</button>
 
-            </a>
+            </span>
             <br></br>
-            <a>by: {blog.author}</a>
+            <span>by: {blog.author}</span>
+            <DeleteButton
+              blog={blog}
+              user={user}
+              handleDelete={handleDelete}
+            />
           </Togglable>
         </div>
     </div>
