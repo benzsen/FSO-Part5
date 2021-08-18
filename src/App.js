@@ -16,138 +16,138 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [updateList, triggerUpdateList] = useState("")
+  const [updateList, triggerUpdateList] = useState('')
   const [notifClass, setNotifClass] = useState('')
   const [notifMessage, setNotifMessage] = useState('')
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>{
+    blogService.getAll().then(blogs => {
       blogs.sort((a,b) => b.likes-a.likes)
       setBlogs(blogs)
       //triggerUpdateList("")
     })
   }, [user, updateList])
 
-//Check user saved in local storage
+  //Check user saved in local storage
   useEffect(() => {
-  const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
-      }
-    }, [])
+    }
+  }, [])
 
   const handleLogin = async (event) => {
     event.preventDefault()
 
     try {
-     const user = await loginService.login({
-       username, password,
-     })
-     window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-     blogService.setToken(user.token)
-     setUser(user)
-     setUsername('')
-     setPassword('')
-     console.log(user);
-   } catch (exception) {
-       setNotifClass("redNotif")
-       setNotifMessage("Wrong Credentials")
-       setTimeout(() => {
-         setNotifMessage(null)
-       }, 5000)
-     }
+      const user = await loginService.login({
+        username, password,
+      })
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
+      blogService.setToken(user.token)
+      setUser(user)
+      setUsername('')
+      setPassword('')
+      console.log(user)
+    } catch (exception) {
+      setNotifClass('redNotif')
+      setNotifMessage('Wrong Credentials')
+      setTimeout(() => {
+        setNotifMessage(null)
+      }, 5000)
+    }
   }
 
   const handleCreate = (event) => {
     event.preventDefault()
 
     try {
-     blogService.create({
-       title, author, url
-     }).then(res=>{
-       triggerUpdateList(res)
-       setNotifClass("greenNotif")
-       setNotifMessage("Added " + title + "by " + author + "!")
-     })
-     .then(setTimeout(() => {
-       setNotifMessage(null)
-     }, 5000))
-   } catch (exception) {
-       setNotifClass("redNotif")
-       setNotifMessage("Error Creating Blog Post")
-       setTimeout(() => {
+      blogService.create({
+        title, author, url
+      }).then(res => {
+        triggerUpdateList(res)
+        setNotifClass('greenNotif')
+        setNotifMessage('Added ' + title + 'by ' + author + '!')
+      })
+        .then(setTimeout(() => {
           setNotifMessage(null)
+        }, 5000))
+    } catch (exception) {
+      setNotifClass('redNotif')
+      setNotifMessage('Error Creating Blog Post')
+      setTimeout(() => {
+        setNotifMessage(null)
       }, 5000)
     }
   }
 
-   const handleLike = async(blogId) => {
-     //event.preventDefault()
-     const likedBlog = await blogService.getByBlogId(blogId)
-     likedBlog.likes += 1
-     const user = likedBlog.user._id
-     likedBlog.user =  user
-     const updateLike = await blogService.updateBlog(blogId, likedBlog)
-     triggerUpdateList(updateLike)
-   }
+  const handleLike = async(blogId) => {
+    //event.preventDefault()
+    const likedBlog = await blogService.getByBlogId(blogId)
+    likedBlog.likes += 1
+    const user = likedBlog.user._id
+    likedBlog.user =  user
+    const updateLike = await blogService.updateBlog(blogId, likedBlog)
+    triggerUpdateList(updateLike)
+  }
 
-    const handleDelete = async(blogId) => {
-      if(window.confirm("Are you sure you want to delete the blog?"))
-      {
-        const removeBlog = await blogService.remove(blogId)
-        triggerUpdateList(removeBlog)
-        window.confirm("Blog Deleted")
-      }
+  const handleDelete = async(blogId) => {
+    if(window.confirm('Are you sure you want to delete the blog?'))
+    {
+      const removeBlog = await blogService.remove(blogId)
+      triggerUpdateList(removeBlog)
+      window.confirm('Blog Deleted')
     }
+  }
 
-//Attemp to switch to async/await
-   // const handleLogin = async (event) => {
-   //   event.preventDefault()
-   //
-   //   try {
-   //    const user = await loginService.login({
-   //      username, password,
-   //    })
-   //    window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-   //    blogService.setToken(user.token)
-   //    setUser(user)
-   //    setUsername('')
-   //    setPassword('')
-   //    console.log(user);
-   //  } catch (exception) {
-   //      setNotifClass("redNotif")
-   //      setNotifMessage("Wrong Credentials")
-   //      setTimeout(() => {
-   //        setNotifMessage(null)
-   //      }, 5000)
-   //    }
-   // }
+  //Attemp to switch to async/await
+  // const handleLogin = async (event) => {
+  //   event.preventDefault()
+  //
+  //   try {
+  //    const user = await loginService.login({
+  //      username, password,
+  //    })
+  //    window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
+  //    blogService.setToken(user.token)
+  //    setUser(user)
+  //    setUsername('')
+  //    setPassword('')
+  //    console.log(user);
+  //  } catch (exception) {
+  //      setNotifClass("redNotif")
+  //      setNotifMessage("Wrong Credentials")
+  //      setTimeout(() => {
+  //        setNotifMessage(null)
+  //      }, 5000)
+  //    }
+  // }
 
-   const Notification = (props) => {
-     if (props.message === null){
-       return null;
-     }
-     return (
-       <div className={props.notifClass}>
-         {props.message}
-       </div>
-     )
-   }
+  const Notification = (props) => {
+    if (props.message === null){
+      return null
+    }
+    return (
+      <div className={props.notifClass}>
+        {props.message}
+      </div>
+    )
+  }
 
   const notification = () => (
-      <Notification
+    <Notification
       message={notifMessage}
       notifClass={notifClass}
-      />
+    />
   )
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
         username
-          <input
+        <input
           type="text"
           value={username}
           name="Username"
@@ -156,7 +156,7 @@ const App = () => {
       </div>
       <div>
         password
-          <input
+        <input
           type="password"
           value={password}
           name="Password"
@@ -166,7 +166,7 @@ const App = () => {
       <button type="submit">login</button>
     </form>
 
-)
+  )
 
   const logout = () => {
     setUser(null)
@@ -175,33 +175,33 @@ const App = () => {
 
   const blogList = () => (
     <div>
-    <p>
-      {user.name} is logged in
-      <button onClick={logout}>Logout</button>
-    </p>
+      <p>
+        {user.name} is logged in
+        <button onClick={logout}>Logout</button>
+      </p>
 
-    <Togglable buttonLabel="Create a New Blog Here!">
-      <BlogForm
-      handleCreate={handleCreate}
-      title={title}
-      author={author}
-      url={url}
-      handleTitleChange={({ target }) => setTitle(target.value)}
-      handleAuthorChange={({ target }) => setAuthor(target.value)}
-      handleUrlChange={({ target }) => setUrl(target.value)}
-      />
-    </Togglable>
-    {blogs.map(blog =>{
-      return(
+      <Togglable buttonLabel="Create a New Blog Here!">
+        <BlogForm
+          handleCreate={handleCreate}
+          title={title}
+          author={author}
+          url={url}
+          handleTitleChange={({ target }) => setTitle(target.value)}
+          handleAuthorChange={({ target }) => setAuthor(target.value)}
+          handleUrlChange={({ target }) => setUrl(target.value)}
+        />
+      </Togglable>
+      {blogs.map(blog => {
+        return(
           <Blog
-          user={user}
-          key={blog.id}
-          blog={blog}
-          handleLike={handleLike}
-          handleDelete={handleDelete}
+            user={user}
+            key={blog.id}
+            blog={blog}
+            handleLike={handleLike}
+            handleDelete={handleDelete}
           />
-      )
-    })}
+        )
+      })}
     </div>
   )
 
@@ -211,8 +211,8 @@ const App = () => {
       {notification()}
       <div>
         {user === null ?
-        loginForm() :
-        blogList()
+          loginForm() :
+          blogList()
         }
       </div>
     </div>
