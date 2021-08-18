@@ -10,9 +10,9 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  // const [title, setTitle] = useState('')
+  // const [author, setAuthor] = useState('')
+  // const [url, setUrl] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -60,12 +60,21 @@ const App = () => {
     }
   }
 
-  const handleCreate = (event) => {
-    event.preventDefault()
+  const handleLike = async(blogId) => {
+    //event.preventDefault()
+    const likedBlog = await blogService.getByBlogId(blogId)
+    likedBlog.likes += 1
+    const user = likedBlog.user._id
+    likedBlog.user =  user
+    const updateLike = await blogService.updateBlog(blogId, likedBlog)
+    triggerUpdateList(updateLike)
+  }
+
+  const handleCreate = (blogObject) => {
 
     try {
       blogService.create({
-        title, author, url
+        blogObject
       }).then(res => {
         triggerUpdateList(res)
         setNotifClass('greenNotif')
@@ -83,16 +92,6 @@ const App = () => {
     }
   }
 
-  const handleLike = async(blogId) => {
-    //event.preventDefault()
-    const likedBlog = await blogService.getByBlogId(blogId)
-    likedBlog.likes += 1
-    const user = likedBlog.user._id
-    likedBlog.user =  user
-    const updateLike = await blogService.updateBlog(blogId, likedBlog)
-    triggerUpdateList(updateLike)
-  }
-
   const handleDelete = async(blogId) => {
     if(window.confirm('Are you sure you want to delete the blog?'))
     {
@@ -102,6 +101,8 @@ const App = () => {
     }
   }
 
+//Async/Await Attempt
+{
   //Attemp to switch to async/await
   // const handleLogin = async (event) => {
   //   event.preventDefault()
@@ -124,6 +125,7 @@ const App = () => {
   //      }, 5000)
   //    }
   // }
+}
 
   const Notification = (props) => {
     if (props.message === null){
@@ -183,12 +185,12 @@ const App = () => {
       <Togglable buttonLabel="Create a New Blog Here!">
         <BlogForm
           handleCreate={handleCreate}
-          title={title}
-          author={author}
-          url={url}
-          handleTitleChange={({ target }) => setTitle(target.value)}
-          handleAuthorChange={({ target }) => setAuthor(target.value)}
-          handleUrlChange={({ target }) => setUrl(target.value)}
+          // title={title}
+          // author={author}
+          // url={url}
+          // handleTitleChange={({ target }) => setTitle(target.value)}
+          // handleAuthorChange={({ target }) => setAuthor(target.value)}
+          // handleUrlChange={({ target }) => setUrl(target.value)}
         />
       </Togglable>
       {blogs.map(blog => {
