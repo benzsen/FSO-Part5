@@ -10,9 +10,9 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  // const [title, setTitle] = useState('')
+  // const [author, setAuthor] = useState('')
+  // const [url, setUrl] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -54,29 +54,6 @@ const App = () => {
     } catch (exception) {
       setNotifClass('redNotif')
       setNotifMessage('Wrong Credentials')
-      setTimeout(() => {
-        setNotifMessage(null)
-      }, 5000)
-    }
-  }
-
-  const handleCreate = (event) => {
-    event.preventDefault()
-
-    try {
-      blogService.create({
-        title, author, url
-      }).then(res => {
-        triggerUpdateList(res)
-        setNotifClass('greenNotif')
-        setNotifMessage('Added ' + title + 'by ' + author + '!')
-      })
-        .then(setTimeout(() => {
-          setNotifMessage(null)
-        }, 5000))
-    } catch (exception) {
-      setNotifClass('redNotif')
-      setNotifMessage('Error Creating Blog Post')
       setTimeout(() => {
         setNotifMessage(null)
       }, 5000)
@@ -182,13 +159,14 @@ const App = () => {
 
       <Togglable buttonLabel="Create a New Blog Here!">
         <BlogForm
-          handleCreate={handleCreate}
-          title={title}
-          author={author}
-          url={url}
-          handleTitleChange={({ target }) => setTitle(target.value)}
-          handleAuthorChange={({ target }) => setAuthor(target.value)}
-          handleUrlChange={({ target }) => setUrl(target.value)}
+          setNotifClass={setNotifClass}
+          // handleCreate={handleCreate}
+          // title={title}
+          // author={author}
+          // url={url}
+          // handleTitleChange={({ target }) => setTitle(target.value)}
+          // handleAuthorChange={({ target }) => setAuthor(target.value)}
+          // handleUrlChange={({ target }) => setUrl(target.value)}
         />
       </Togglable>
       {blogs.map(blog => {
