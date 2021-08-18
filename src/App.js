@@ -50,7 +50,11 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+<<<<<<< HEAD
       //console.log(user)
+=======
+      console.log(user)
+>>>>>>> c8e6364b34d67c831848c67bcda6d74419e7735b
     } catch (exception) {
       setNotifClass('redNotif')
       setNotifMessage('Wrong Credentials')
