@@ -1,39 +1,29 @@
 import React, {useState} from 'react'
 
-const BlogForm = ({setNotifClass}) => {
+const BlogForm = ({handleCreate}) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [notifClass, setNotifClass] = useState('')
+  const [notifMessage, setNotifMessage] = useState('')
 
-  const handleCreate = (event) => {
+  const addBlog = (event) => {
     event.preventDefault()
-
-    try {
-      blogService.create({
-        title, author, url
-      }).then(res => {
-        triggerUpdateList(res)
-        setNotifClass('greenNotif')
-        setNotifMessage('Added ' + title + 'by ' + author + '!')
-      })
-        .then(setTimeout(() => {
-          setNotifMessage(null)
-        }, 5000))
-    } catch (exception) {
-      setNotifClass('redNotif')
-      setNotifMessage('Error Creating Blog Post')
-      setTimeout(() => {
-        setNotifMessage(null)
-      }, 5000)
-    }
+    handleCreate({
+      title: title,
+      author: author,
+      url: url,
+    })
+    setTitle("")
+    setAuthor("")
+    setUrl("")
   }
-
 
   return(
     <div className="formDiv">
       <h2>Create a New Blog: </h2>
 
-      <form onSubmit={handleCreate}>
+      <form onSubmit={addBlog}>
         <div>
         title:
           <input

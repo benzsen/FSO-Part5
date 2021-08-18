@@ -70,6 +70,28 @@ const App = () => {
     triggerUpdateList(updateLike)
   }
 
+  const handleCreate = (blogObject) => {
+
+    try {
+      blogService.create({
+        blogObject
+      }).then(res => {
+        triggerUpdateList(res)
+        setNotifClass('greenNotif')
+        setNotifMessage('Added ' + title + 'by ' + author + '!')
+      })
+        .then(setTimeout(() => {
+          setNotifMessage(null)
+        }, 5000))
+    } catch (exception) {
+      setNotifClass('redNotif')
+      setNotifMessage('Error Creating Blog Post')
+      setTimeout(() => {
+        setNotifMessage(null)
+      }, 5000)
+    }
+  }
+
   const handleDelete = async(blogId) => {
     if(window.confirm('Are you sure you want to delete the blog?'))
     {
@@ -79,6 +101,8 @@ const App = () => {
     }
   }
 
+//Async/Await Attempt
+{
   //Attemp to switch to async/await
   // const handleLogin = async (event) => {
   //   event.preventDefault()
@@ -101,6 +125,7 @@ const App = () => {
   //      }, 5000)
   //    }
   // }
+}
 
   const Notification = (props) => {
     if (props.message === null){
@@ -159,8 +184,7 @@ const App = () => {
 
       <Togglable buttonLabel="Create a New Blog Here!">
         <BlogForm
-          setNotifClass={setNotifClass}
-          // handleCreate={handleCreate}
+          handleCreate={handleCreate}
           // title={title}
           // author={author}
           // url={url}
