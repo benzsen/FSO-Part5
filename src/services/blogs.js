@@ -8,29 +8,29 @@ const setToken = newToken => {
 }
 
 const getAll = () => {
-  const request = axios.get(baseUrl);
+  const request = axios.get(baseUrl)
   return request
-  .then(response => {
-    return response.data})
+    .then(response => {
+      return response.data})
 }
 
 const getByBlogId = (blogId) => {
-  const request = axios.get(baseUrl + blogId);
+  const request = axios.get(baseUrl + blogId)
   return request
     .then(response => response.data)
 }
 
 const updateBlog = (blogId, body) => {
-  const request = axios.put(baseUrl + blogId, body);
+  const request = axios.put(baseUrl + blogId, body)
   return request
     .then(response => response.data)
 }
 
-const create = async ({title, author, url}) => {
+const create = async ({ title, author, url }) => {
   const config = {
     headers: { Authorization: token },
   }
-  await axios.post(baseUrl, {title, author, url}, config);
+  await axios.post(baseUrl, { title, author, url }, config)
 }
 
 const remove = async (blogId) => {
@@ -41,6 +41,6 @@ const remove = async (blogId) => {
   return request
 }
 
- const blogService = { getAll, getByBlogId, setToken, updateBlog, create, remove}
+const blogService = { getAll, getByBlogId, setToken, updateBlog, create, remove }
 
 export default blogService

@@ -2,7 +2,7 @@ import React from 'react'
 import Togglable from './Togglable'
 import DeleteButton from './DeleteButton'
 
-const Blog = ({user, blog, handleLike, handleDelete}) => {
+const Blog = ({ user, blog, handleLike, handleDelete }) => {
 
   const blogStyle = {
     paddingTop: 10,
@@ -13,26 +13,27 @@ const Blog = ({user, blog, handleLike, handleDelete}) => {
   }
 
   return (
-    <div style={blogStyle}>
-        <div>{blog.title + " "}
-          <Togglable buttonLabel="view">
-            <br></br>
-            <span>{blog.url}</span>
-            <br></br>
-            <span>
-              Likes: {blog.likes + " "}
-              <button onClick={()=>handleLike(blog.id)}>like</button>
+    <div style={blogStyle} className="blogDiv">
+      <div>
+        <span className="titleSpan">{blog.title + ' '}</span>
+        <Togglable buttonLabel="view">
+          <br></br>
+          <span>{blog.url}</span>
+          <br></br>
+          <span>
+              Likes: {blog.likes + ' '}
+            <button onClick={() => handleLike(blog.id)}>like</button>
 
-            </span>
-            <br></br>
-            <span>by: {blog.author}</span>
-            <DeleteButton
-              blog={blog}
-              user={user}
-              handleDelete={handleDelete}
-            />
-          </Togglable>
-        </div>
+          </span>
+          <br></br>
+          <span>by: {blog.author}</span>
+          <DeleteButton
+            blog={blog}
+            user={user}
+            handleDelete={handleDelete}
+          />
+        </Togglable>
+      </div>
     </div>
   )
 }
