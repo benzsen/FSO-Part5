@@ -13,14 +13,9 @@ const Blog = ({ user, blog, handleLike, handleDelete }) => {
   }
 
   return (
-<<<<<<< HEAD
     <div style={blogStyle} className="blogDiv">
       <div>
         <span className="titleSpan">{blog.title + ' '}</span>
-=======
-    <div style={blogStyle}>
-      <div>{blog.title + ' '}
->>>>>>> c8e6364b34d67c831848c67bcda6d74419e7735b
         <Togglable buttonLabel="view">
           <br></br>
           <span>{blog.url}</span>

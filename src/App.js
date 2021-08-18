@@ -7,7 +7,7 @@ import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
- 
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [title, setTitle] = useState('')
@@ -50,11 +50,7 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-<<<<<<< HEAD
       //console.log(user)
-=======
-      console.log(user)
->>>>>>> c8e6364b34d67c831848c67bcda6d74419e7735b
     } catch (exception) {
       setNotifClass('redNotif')
       setNotifMessage('Wrong Credentials')
