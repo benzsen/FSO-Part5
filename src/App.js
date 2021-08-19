@@ -10,9 +10,6 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  // const [title, setTitle] = useState('')
-  // const [author, setAuthor] = useState('')
-  // const [url, setUrl] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -78,7 +75,7 @@ const App = () => {
       }).then(res => {
         triggerUpdateList(res)
         setNotifClass('greenNotif')
-        setNotifMessage('Added ' + title + 'by ' + author + '!')
+        setNotifMessage('Added ' + blogObject.title + 'by ' + blogObject.author + '!')
       })
         .then(setTimeout(() => {
           setNotifMessage(null)
@@ -101,8 +98,8 @@ const App = () => {
     }
   }
 
-//Async/Await Attempt
-{
+  //Async/Await Attempt
+  {
   //Attemp to switch to async/await
   // const handleLogin = async (event) => {
   //   event.preventDefault()
@@ -125,7 +122,7 @@ const App = () => {
   //      }, 5000)
   //    }
   // }
-}
+  }
 
   const Notification = (props) => {
     if (props.message === null){

@@ -1,11 +1,9 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 
-const BlogForm = ({handleCreate}) => {
+const BlogForm = ({ handleCreate }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
-  const [notifClass, setNotifClass] = useState('')
-  const [notifMessage, setNotifMessage] = useState('')
 
   const addBlog = (event) => {
     event.preventDefault()
@@ -14,9 +12,9 @@ const BlogForm = ({handleCreate}) => {
       author: author,
       url: url,
     })
-    setTitle("")
-    setAuthor("")
-    setUrl("")
+    setTitle('')
+    setAuthor('')
+    setUrl('')
   }
 
   return(
