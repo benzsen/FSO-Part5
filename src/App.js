@@ -175,7 +175,7 @@ const App = () => {
   }
 
   const blogList = () => (
-    <div>
+    <div className="blogList">
       <p>
         {user.name} is logged in
         <button onClick={logout}>Logout</button>
