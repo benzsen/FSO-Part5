@@ -53,7 +53,7 @@ const BlogForm = ({ handleCreate }) => {
           />
         </div>
         <p>
-          <button type="submit"> Create </button>
+          <button type="submit" id="saveButton"> Save </button>
         </p>
       </form>
     </div>
