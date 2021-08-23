@@ -10,7 +10,7 @@ const BlogForm = ({ handleCreate }) => {
     handleCreate({
       title: title,
       author: author,
-      url: url,
+      url: url
     })
     setTitle('')
     setAuthor('')
