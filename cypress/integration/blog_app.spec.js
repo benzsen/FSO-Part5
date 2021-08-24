@@ -115,7 +115,6 @@ describe('Blog app', function() {
         const likes = blogs.map(blog => blog.likes)
         console.log(likes);
         expect(likes).to.eq([25,5,1,0])
-        //expect(JSON.stringify(likes)).to.eq("[25,5,1,0]")
       })
     })
   })
