@@ -10,11 +10,7 @@ describe('Blog app', function() {
       name:'Formula 1',
       password: 'one'
       })
-    //   .then(response => {
-    //   console.log("Token", response)
-    //   localStorage.setItem('loggedBlogAppUser', JSON.stringify(response.body))
-    //   cy.visit('http://localhost:3000')
-    // })
+
       cy.visit('http://localhost:3000')
   })
 
@@ -41,7 +37,7 @@ describe('Blog app', function() {
       cy.get('#password').type('one')
       cy.get('#loginButton').click()
 
-      cy.contains('Create a new blog').click()
+      cy.contains('Create a New Blog Here!').click()
       cy.get('#title').type('RX350')
       cy.get('#author').type('Lexus')
       cy.get('#url').type('Lexus.com')
@@ -68,8 +64,8 @@ describe('Blog app', function() {
 
     // Part 5.22
     it.only('Blogs listed by likes', function() {
-
       //Authorization issues when posting directly
+
       cy.request({
         url: "http://localhost:3003/api/blogs",
         method: 'POST',
@@ -112,8 +108,10 @@ describe('Blog app', function() {
       cy.request({
         url: "http://localhost:3003/api/blogs",
         method: 'GET'
-      }).then(blogs => {
-        console.log(blogs);
+      }).then(response => {
+        const blogs = response.body
+        console.log("blogs", blogs);
+
         const likes = blogs.map(blog => blog.likes)
         console.log(likes);
         expect(likes).to.eq([25,5,1,0])
