@@ -105,6 +105,7 @@ describe('Blog app', function() {
           'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
         }
       })
+
       cy.request({
         url: "http://localhost:3003/api/blogs",
         method: 'GET'
@@ -114,7 +115,15 @@ describe('Blog app', function() {
 
         const likes = blogs.map(blog => blog.likes)
         console.log(likes);
-        expect(likes).to.eq([25,5,1,0])
+
+        })
+
+      cy.get(".blog")
+        .then(blogs => {
+        cy.wrap(blogs[0]).contains("4Runner")
+        cy.wrap(blogs[1]).contains("Rav4")
+        cy.wrap(blogs[2]).contains("Corolla")
+        cy.wrap(blogs[3]).contains("RX250")
       })
     })
   })
