@@ -27,10 +27,12 @@ const updateBlog = (blogId, body) => {
 }
 
 const create = async ({ title, author, url }) => {
+  console.log(title, author, url)
   const config = {
     headers: { Authorization: token },
   }
-  await axios.post(baseUrl, { title, author, url }, config)
+  const response = await axios.post(baseUrl, { title, author, url }, config)
+  return response.data
 }
 
 const remove = async (blogId) => {

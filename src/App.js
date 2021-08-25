@@ -42,12 +42,13 @@ const App = () => {
       const user = await loginService.login({
         username, password,
       })
+
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
-      //console.log(user)
+      console.log(user)
     } catch (exception) {
       setNotifClass('redNotif')
       setNotifMessage('Wrong Credentials')
@@ -68,15 +69,14 @@ const App = () => {
   }
 
   const handleCreate = (blogObject) => {
-
+    console.log(blogObject)
     try {
-      blogService.create({
-        blogObject
-      }).then(res => {
-        triggerUpdateList(res)
-        setNotifClass('greenNotif')
-        setNotifMessage('Added ' + blogObject.title + 'by ' + blogObject.author + '!')
-      })
+      blogService.create(blogObject)
+        .then(res => {
+          triggerUpdateList(res)
+          setNotifClass('greenNotif')
+          setNotifMessage('Added ' + blogObject.title + ' by ' + blogObject.author + '!')
+        })
         .then(setTimeout(() => {
           setNotifMessage(null)
         }, 5000))
