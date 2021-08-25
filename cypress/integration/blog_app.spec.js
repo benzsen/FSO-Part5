@@ -78,20 +78,19 @@ describe('Blog app', function() {
         headers: {
           'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
         }
-      }).then(()=>{
-        cy.request({
-          url: "http://localhost:3003/api/blogs",
-          method: 'POST',
-          body: {
-            title: 'Rav4',
-            author: "Toyota",
-            url: 'Toyota.com',
-            likes: 5
-          },
-          headers: {
-            'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
-          }
-        })
+      })
+      cy.request({
+        url: "http://localhost:3003/api/blogs",
+        method: 'POST',
+        body: {
+          title: 'Rav4',
+          author: "Toyota",
+          url: 'Toyota.com',
+          likes: 5
+        },
+        headers: {
+          'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
+        }
       })
       cy.request({
         url: "http://localhost:3003/api/blogs",
@@ -105,15 +104,13 @@ describe('Blog app', function() {
         headers: {
           'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
         }
-      }).then(response =>{
-
+      })
       cy.get(".blogDiv").then(blogs => {
         cy.wrap(blogs[0]).contains("4Runner")
         cy.wrap(blogs[1]).contains("Rav4")
         cy.wrap(blogs[2]).contains("Corolla")
         cy.wrap(blogs[3]).contains("RX350")
       })
-    })
     })
   })
 })
