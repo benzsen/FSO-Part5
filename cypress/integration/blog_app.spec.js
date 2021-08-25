@@ -68,20 +68,7 @@ describe('Blog app', function() {
 
       cy.request({
         url: "http://localhost:3003/api/blogs",
-        method: 'POST',
-        body: {
-          title: 'Rav4',
-          author: "Toyota",
-          url: 'Toyota.com',
-          likes: 5
-        },
-        headers: {
-          'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
-        }
-      })
-      cy.request({
-        url: "http://localhost:3003/api/blogs",
-        method: 'POST',
+        method: 'post',
         body: {
           title: 'Corolla',
           author: "Toyota",
@@ -91,6 +78,20 @@ describe('Blog app', function() {
         headers: {
           'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
         }
+      }).then(()=>{
+        cy.request({
+          url: "http://localhost:3003/api/blogs",
+          method: 'POST',
+          body: {
+            title: 'Rav4',
+            author: "Toyota",
+            url: 'Toyota.com',
+            likes: 5
+          },
+          headers: {
+            'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
+          }
+        })
       })
       cy.request({
         url: "http://localhost:3003/api/blogs",
@@ -104,18 +105,15 @@ describe('Blog app', function() {
         headers: {
           'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
         }
-      })
-      cy.request({
-        url: "http://localhost:3003/api/blogs",
-        method: 'GET'
-      }).then(response => {
-        const blogs = response.body
-        console.log("blogs", blogs);
+      }).then(response =>{
 
-        const likes = blogs.map(blog => blog.likes)
-        console.log(likes);
-        expect(likes).to.eq([25,5,1,0])
+      cy.get(".blogDiv").then(blogs => {
+        cy.wrap(blogs[0]).contains("4Runner")
+        cy.wrap(blogs[1]).contains("Rav4")
+        cy.wrap(blogs[2]).contains("Corolla")
+        cy.wrap(blogs[3]).contains("RX350")
       })
+    })
     })
   })
 })
