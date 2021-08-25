@@ -68,12 +68,12 @@ describe('Blog app', function() {
 
       cy.request({
         url: "http://localhost:3003/api/blogs",
-        method: 'POST',
+        method: 'post',
         body: {
-          title: 'Rav4',
+          title: 'Corolla',
           author: "Toyota",
           url: 'Toyota.com',
-          likes: 5
+          likes: 1
         },
         headers: {
           'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
@@ -83,10 +83,10 @@ describe('Blog app', function() {
         url: "http://localhost:3003/api/blogs",
         method: 'POST',
         body: {
-          title: 'Corolla',
+          title: 'Rav4',
           author: "Toyota",
           url: 'Toyota.com',
-          likes: 1
+          likes: 5
         },
         headers: {
           'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
@@ -105,6 +105,7 @@ describe('Blog app', function() {
           'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
         }
       })
+
 
       cy.request({
         url: "http://localhost:3003/api/blogs",
