@@ -21,7 +21,6 @@ const App = () => {
     blogService.getAll().then(blogs => {
       blogs.sort((a,b) => b.likes-a.likes)
       setBlogs(blogs)
-      //triggerUpdateList("")
     })
   }, [user, updateList])
 
@@ -98,32 +97,6 @@ const App = () => {
     }
   }
 
-  //Async/Await Attempt
-  {
-  //Attemp to switch to async/await
-  // const handleLogin = async (event) => {
-  //   event.preventDefault()
-  //
-  //   try {
-  //    const user = await loginService.login({
-  //      username, password,
-  //    })
-  //    window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-  //    blogService.setToken(user.token)
-  //    setUser(user)
-  //    setUsername('')
-  //    setPassword('')
-  //    console.log(user);
-  //  } catch (exception) {
-  //      setNotifClass("redNotif")
-  //      setNotifMessage("Wrong Credentials")
-  //      setTimeout(() => {
-  //        setNotifMessage(null)
-  //      }, 5000)
-  //    }
-  // }
-  }
-
   const Notification = (props) => {
     if (props.message === null){
       return null
@@ -184,12 +157,6 @@ const App = () => {
       <Togglable buttonLabel="Create a New Blog Here!">
         <BlogForm
           handleCreate={handleCreate}
-          // title={title}
-          // author={author}
-          // url={url}
-          // handleTitleChange={({ target }) => setTitle(target.value)}
-          // handleAuthorChange={({ target }) => setAuthor(target.value)}
-          // handleUrlChange={({ target }) => setUrl(target.value)}
         />
       </Togglable>
       {blogs.map(blog => {
@@ -207,7 +174,7 @@ const App = () => {
   )
 
   return (
-    <div>
+    <div className="container">
       <h2>blogs</h2>
       {notification()}
       <div>
