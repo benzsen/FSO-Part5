@@ -7,29 +7,42 @@ import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { useSelector, useDispatch } from 'react-redux'
+import { setUsername, setPassword, clearLogin } from "./reducers/loginReducer"
+import { setNotif, clearNotif } from "./reducers/notifReducer"
+import { setBlogs } from "./reducers/blogReducer"
+import { setUser } from "./reducers/userReducer"
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
-  const [updateList, triggerUpdateList] = useState('')
-  const [notifClass, setNotifClass] = useState('')
-  const [notifMessage, setNotifMessage] = useState('')
+  const dispatch = useDispatch()
+  const username = useSelector(state => state.login.username)
+  const password = useSelector(state => state.login.password)
+  const notifClass = useSelector(state => state.notif.class)
+  const notifMessage = useSelector(state => state.notif.message)
+  const blogs = useSelector(state => state.blog)
+  const user = useSelector(state => state.user)
+
+  //const [blogs, setBlogs] = useState([])
+  //const [username, setUsername] = useState('')
+  //const [password, setPassword] = useState('')
+  //const [user, setUser] = useState(null)
+  //const [updateList, triggerUpdateList] = useState('')
+  //const [notifClass, setNotifClass] = useState('')
+  //const [notifMessage, setNotifMessage] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs => {
-      blogs.sort((a,b) => b.likes-a.likes)
-      setBlogs(blogs)
+      //blogs.sort((a,b) => b.likes-a.likes)
+      dispatch(setBlogs(blogs))
     })
-  }, [user, updateList])
+  }, [user, dispatch])
 
   //Check user saved in local storage
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      dispatch(setUser(user))
       blogService.setToken(user.token)
     }
   }, [])
@@ -44,15 +57,20 @@ const App = () => {
 
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      setUser(user)
-      setUsername('')
-      setPassword('')
-      console.log(user)
+      dispatch(setUser(user))
+      dispatch(clearLogin())
+      //console.log(user)
     } catch (exception) {
-      setNotifClass('redNotif')
-      setNotifMessage('Wrong Credentials')
+      // setNotifClass('redNotif')
+      // setNotifMessage('Wrong Credentials')
+      dispatch(setNotif({
+        message:'Wrong Credentials',
+        class:'redNotif'
+      }))
       setTimeout(() => {
-        setNotifMessage(null)
+        dispatch(clearNotif())
+        //setNotifMessage(null)
+
       }, 5000)
     }
   }
@@ -60,39 +78,50 @@ const App = () => {
   const handleLike = async(blogId) => {
     //event.preventDefault()
     const likedBlog = await blogService.getByBlogId(blogId)
-    likedBlog.likes += 1
-    const user = likedBlog.user._id
-    likedBlog.user =  user
-    const updateLike = await blogService.updateBlog(blogId, likedBlog)
-    triggerUpdateList(updateLike)
+    const blogToLike = {...likedBlog, likes: likedBlog.likes +1, user: likedBlog.user._id}
+    await blogService.updateBlog(blogToLike)
+    dispatch(setBlogs(blogs.map(b => b.id === blogId ? {...likedBlog, likes: likedBlog.likes + 1 } : b)))
+    //triggerUpdateList(blogToLike)
   }
 
   const handleCreate = (blogObject) => {
-    console.log(blogObject)
     try {
       blogService.create(blogObject)
         .then(res => {
-          triggerUpdateList(res)
-          setNotifClass('greenNotif')
-          setNotifMessage('Added ' + blogObject.title + ' by ' + blogObject.author + '!')
+          //triggerUpdateList(res)
+          dispatch(setBlogs(blogs.concat(res)))
+          // setNotifClass('greenNotif')
+          // setNotifMessage('Added ' + blogObject.title + ' by ' + blogObject.author + '!')
+          dispatch(setNotif({
+            message:'greenNotif',
+            class:'Added ' + blogObject.title + ' by ' + blogObject.author + '!'
+          }))
         })
         .then(setTimeout(() => {
-          setNotifMessage(null)
+          //setNotifMessage(null)
+          dispatch(clearNotif())
         }, 5000))
     } catch (exception) {
-      setNotifClass('redNotif')
-      setNotifMessage('Error Creating Blog Post')
+      // setNotifClass('redNotif')
+      // setNotifMessage('Error Creating Blog Post')
+      dispatch(setNotif({
+        message:'redNotif',
+        class:'Error Creating Blog Post'
+      }))
       setTimeout(() => {
-        setNotifMessage(null)
+        // setNotifMessage(null)
+        dispatch(clearNotif())
       }, 5000)
     }
   }
 
   const handleDelete = async(blogId) => {
-    if(window.confirm('Are you sure you want to delete the blog?'))
+    const blogToRemove = blogs.find(b => b.id === blogId)
+    if(window.confirm("Are you sure you want to delete:"+ blogToRemove.title +"?"))
     {
       const removeBlog = await blogService.remove(blogId)
-      triggerUpdateList(removeBlog)
+      //triggerUpdateList(removeBlog)
+      dispatch(setBlogs(blogs.filter(b => b.id !== blogId)))
       window.confirm('Blog Deleted')
     }
   }
@@ -124,7 +153,7 @@ const App = () => {
           value={username}
           name="Username"
           id="username"
-          onChange={({ target }) => setUsername(target.value)}
+          onChange={({ target }) => dispatch(setUsername(target.value))}
         />
       </div>
       <div>
@@ -134,7 +163,7 @@ const App = () => {
           value={password}
           name="Password"
           id="password"
-          onChange={({ target }) => setPassword(target.value)}
+          onChange={({ target }) => dispatch(setPassword(target.value))}
         />
       </div>
       <button type="submit" id="loginButton">login</button>
@@ -143,11 +172,12 @@ const App = () => {
   )
 
   const logout = () => {
-    setUser(null)
+    dispatch(setUser(null))
     return window.localStorage.removeItem('loggedBlogappUser')
   }
 
-  const blogList = () => (
+  const blogList = () => {
+  return (
     <div className="blogList">
       <p>
         {user.name} is logged in
@@ -159,7 +189,7 @@ const App = () => {
           handleCreate={handleCreate}
         />
       </Togglable>
-      {blogs.map(blog => {
+      {blogs && blogs.map(blog => {
         return(
           <Blog
             user={user}
@@ -169,9 +199,10 @@ const App = () => {
             handleDelete={handleDelete}
           />
         )
-      })}
+      })
+      }
     </div>
-  )
+  )}
 
   return (
     <div className="container">

@@ -20,8 +20,8 @@ const getByBlogId = (blogId) => {
     .then(response => response.data)
 }
 
-const updateBlog = (blogId, body) => {
-  const request = axios.put(baseUrl + blogId, body)
+const updateBlog = (blog) => {
+  const request = axios.put(baseUrl + blog.id, blog)
   return request
     .then(response => response.data)
 }

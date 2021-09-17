@@ -3,15 +3,15 @@
 describe('Blog app', function() {
 
   beforeEach(function() {
-      cy.request('POST', 'http://localhost:3003/api/testing/reset')
+    cy.request('POST', 'http://localhost:3003/api/testing/reset')
 
-      cy.request('POST', 'http://localhost:3003/api/users/', {
+    cy.request('POST', 'http://localhost:3003/api/users/', {
       username: 'formula',
       name:'Formula 1',
       password: 'one'
-      })
+    })
 
-      cy.visit('http://localhost:3000')
+    cy.visit('http://localhost:3000')
   })
 
   describe('login', function () {
@@ -67,11 +67,11 @@ describe('Blog app', function() {
       //Authorization issues when posting directly
 
       cy.request({
-        url: "http://localhost:3003/api/blogs",
+        url: 'http://localhost:3003/api/blogs',
         method: 'post',
         body: {
           title: 'Corolla',
-          author: "Toyota",
+          author: 'Toyota',
           url: 'Toyota.com',
           likes: 1
         },
@@ -80,11 +80,11 @@ describe('Blog app', function() {
         }
       })
       cy.request({
-        url: "http://localhost:3003/api/blogs",
+        url: 'http://localhost:3003/api/blogs',
         method: 'POST',
         body: {
           title: 'Rav4',
-          author: "Toyota",
+          author: 'Toyota',
           url: 'Toyota.com',
           likes: 5
         },
@@ -93,11 +93,11 @@ describe('Blog app', function() {
         }
       })
       cy.request({
-        url: "http://localhost:3003/api/blogs",
+        url: 'http://localhost:3003/api/blogs',
         method: 'POST',
         body: {
           title: '4Runner',
-          author: "Toyota",
+          author: 'Toyota',
           url: 'Toyota.com',
           likes: 25
         },
@@ -108,24 +108,24 @@ describe('Blog app', function() {
 
 
       cy.request({
-        url: "http://localhost:3003/api/blogs",
+        url: 'http://localhost:3003/api/blogs',
         method: 'GET'
       }).then(response => {
         const blogs = response.body
-        console.log("blogs", blogs);
+        console.log('blogs', blogs)
 
         const likes = blogs.map(blog => blog.likes)
-        console.log(likes);
+        console.log(likes)
 
-        })
-
-      cy.get(".blog")
-        .then(blogs => {
-        cy.wrap(blogs[0]).contains("4Runner")
-        cy.wrap(blogs[1]).contains("Rav4")
-        cy.wrap(blogs[2]).contains("Corolla")
-        cy.wrap(blogs[3]).contains("RX250")
       })
+
+      cy.get('.blog')
+        .then(blogs => {
+          cy.wrap(blogs[0]).contains('4Runner')
+          cy.wrap(blogs[1]).contains('Rav4')
+          cy.wrap(blogs[2]).contains('Corolla')
+          cy.wrap(blogs[3]).contains('RX250')
+        })
     })
   })
 })
