@@ -1,17 +1,31 @@
-//Completed 5.1-5.4
-//Completed 5.5-5.10
+//Completed 5.1-5.10
+//Completed 7.9-7.13
 
 import React, { useState, useEffect } from 'react'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+  useParams,
+  useHistory,
+} from "react-router-dom"
 import Blog from './components/Blog'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
+import UsersPage from './components/UsersPage'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import userService from './services/users'
 import { useSelector, useDispatch } from 'react-redux'
 import { setUsername, setPassword, clearLogin } from "./reducers/loginReducer"
 import { setNotif, clearNotif } from "./reducers/notifReducer"
 import { setBlogs } from "./reducers/blogReducer"
 import { setUser } from "./reducers/userReducer"
+import { setUsers } from "./reducers/usersReducer"
+
 
 const App = () => {
   const dispatch = useDispatch()
@@ -21,7 +35,9 @@ const App = () => {
   const notifMessage = useSelector(state => state.notif.message)
   const blogs = useSelector(state => state.blog)
   const user = useSelector(state => state.user)
+  const users = useSelector(state => state.users)
 
+  console.log("users", users);
   //const [blogs, setBlogs] = useState([])
   //const [username, setUsername] = useState('')
   //const [password, setPassword] = useState('')
@@ -46,6 +62,13 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  useEffect(() => {
+    userService.getAll().then(res=>{
+      //onsole.log(res);
+      dispatch(setUsers(res))
+    })
+  },[])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -126,17 +149,6 @@ const App = () => {
     }
   }
 
-  const Notification = (props) => {
-    if (props.message === null){
-      return null
-    }
-    return (
-      <div className={props.notifClass}>
-        {props.message}
-      </div>
-    )
-  }
-
   const notification = () => (
     <Notification
       message={notifMessage}
@@ -206,14 +218,21 @@ const App = () => {
 
   return (
     <div className="container">
-      <h2>blogs</h2>
-      {notification()}
-      <div>
-        {user === null ?
-          loginForm() :
-          blogList()
+      <Router>
+        <h2>blogs</h2>
+        {notification()}
+        <div>
+          {user === null ?
+            loginForm() :
+            blogList()
+          }
+        </div>
+
+        {users !== null ?
+          <UsersPage
+          /> : null
         }
-      </div>
+      </Router>
     </div>
   )
 }

@@ -12,6 +12,12 @@ code {
     monospace;
 }
 
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
 .greenNotif {
   color: green;
   background: lightgrey;
