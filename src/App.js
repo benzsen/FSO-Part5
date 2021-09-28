@@ -14,15 +14,17 @@ import {
 import Blog from './components/Blog'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
-import UsersPage from './components/UsersPage'
 import Notification from './components/Notification'
+import UsersPage from './components/UsersPage'
+import UsersBlogs from './components/UsersBlogs'
+import BlogView from './components/BlogView'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import userService from './services/users'
 import { useSelector, useDispatch } from 'react-redux'
 import { setUsername, setPassword, clearLogin } from "./reducers/loginReducer"
 import { setNotif, clearNotif } from "./reducers/notifReducer"
-import { setBlogs } from "./reducers/blogReducer"
+import { initBlogs, setBlogs } from "./reducers/blogReducer"
 import { setUser } from "./reducers/userReducer"
 import { setUsers } from "./reducers/usersReducer"
 
@@ -38,6 +40,7 @@ const App = () => {
   const users = useSelector(state => state.users)
 
   console.log("users", users);
+  console.log("blogs", blogs);
   //const [blogs, setBlogs] = useState([])
   //const [username, setUsername] = useState('')
   //const [password, setPassword] = useState('')
@@ -45,13 +48,6 @@ const App = () => {
   //const [updateList, triggerUpdateList] = useState('')
   //const [notifClass, setNotifClass] = useState('')
   //const [notifMessage, setNotifMessage] = useState('')
-
-  useEffect(() => {
-    blogService.getAll().then(blogs => {
-      //blogs.sort((a,b) => b.likes-a.likes)
-      dispatch(setBlogs(blogs))
-    })
-  }, [user, dispatch])
 
   //Check user saved in local storage
   useEffect(() => {
@@ -65,10 +61,15 @@ const App = () => {
 
   useEffect(() => {
     userService.getAll().then(res=>{
-      //onsole.log(res);
       dispatch(setUsers(res))
     })
   },[])
+
+  useEffect(() => {
+    blogService.getAll().then(blogs => {
+      dispatch(setBlogs(blogs))
+    })
+  }, [user, dispatch])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -219,6 +220,19 @@ const App = () => {
   return (
     <div className="container">
       <Router>
+        <Switch>
+          { users !== null ?
+            users.map(u =>
+            <Route path={"/users/"+u.id}>
+              <UsersBlogs
+                user = {u}
+              />
+            </Route>) :
+            null
+          }
+
+        </Switch>
+
         <h2>blogs</h2>
         {notification()}
         <div>
@@ -232,6 +246,7 @@ const App = () => {
           <UsersPage
           /> : null
         }
+
       </Router>
     </div>
   )
