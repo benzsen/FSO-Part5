@@ -8,9 +8,9 @@ const UsersBlogs = ({user}) => {
       <h2>{user.name+"'s Blogs:"}</h2>
       <div>
         {user.blogs.map(b =>
-          <div key={b.id}>
+          <li key={b.id}>
             {b.title}
-          </div>
+          </li>
         )}
       </div>
     </div>

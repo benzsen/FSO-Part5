@@ -1,6 +1,10 @@
 import React from 'react'
 import Togglable from './Togglable'
 import DeleteButton from './DeleteButton'
+import {
+  BrowserRouter as Router,
+  Switch, Route, Link,
+} from "react-router-dom"
 
 const Blog = ({ user, blog, handleLike, handleDelete }) => {
 
@@ -12,10 +16,11 @@ const Blog = ({ user, blog, handleLike, handleDelete }) => {
     marginBottom: 5
   }
 
+
   return (
     <div style={blogStyle} className="blogDiv">
       <div>
-        <span className="titleSpan">{blog.title + ' '}</span>
+        <Link className="titleSpan" to={"/blogs/"+blog.id}>{blog.title + ' '}</Link>
         <Togglable buttonLabel="view">
           <br></br>
           <span>{blog.url}</span>

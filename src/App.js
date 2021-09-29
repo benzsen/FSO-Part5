@@ -1,16 +1,13 @@
 //Completed 5.1-5.10
-//Completed 7.9-7.13
+//Completed 7.9-7.16
 
 import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import {
   BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect,
-  useParams,
-  useHistory,
+  Switch, Route, Link,
 } from "react-router-dom"
+
 import Blog from './components/Blog'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
@@ -18,16 +15,16 @@ import Notification from './components/Notification'
 import UsersPage from './components/UsersPage'
 import UsersBlogs from './components/UsersBlogs'
 import BlogView from './components/BlogView'
+
 import blogService from './services/blogs'
 import loginService from './services/login'
 import userService from './services/users'
-import { useSelector, useDispatch } from 'react-redux'
+
 import { setUsername, setPassword, clearLogin } from "./reducers/loginReducer"
 import { setNotif, clearNotif } from "./reducers/notifReducer"
 import { initBlogs, setBlogs } from "./reducers/blogReducer"
 import { setUser } from "./reducers/userReducer"
 import { setUsers } from "./reducers/usersReducer"
-
 
 const App = () => {
   const dispatch = useDispatch()
@@ -41,35 +38,24 @@ const App = () => {
 
   console.log("users", users);
   console.log("blogs", blogs);
-  //const [blogs, setBlogs] = useState([])
-  //const [username, setUsername] = useState('')
-  //const [password, setPassword] = useState('')
-  //const [user, setUser] = useState(null)
-  //const [updateList, triggerUpdateList] = useState('')
-  //const [notifClass, setNotifClass] = useState('')
-  //const [notifMessage, setNotifMessage] = useState('')
 
-  //Check user saved in local storage
   useEffect(() => {
+    //Check user saved in local storage
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       dispatch(setUser(user))
       blogService.setToken(user.token)
     }
-  }, [])
 
-  useEffect(() => {
     userService.getAll().then(res=>{
       dispatch(setUsers(res))
     })
-  },[])
 
-  useEffect(() => {
     blogService.getAll().then(blogs => {
-      dispatch(setBlogs(blogs))
+      dispatch(initBlogs())
     })
-  }, [user, dispatch])
+  }, [dispatch])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -83,57 +69,43 @@ const App = () => {
       blogService.setToken(user.token)
       dispatch(setUser(user))
       dispatch(clearLogin())
-      //console.log(user)
     } catch (exception) {
-      // setNotifClass('redNotif')
-      // setNotifMessage('Wrong Credentials')
       dispatch(setNotif({
         message:'Wrong Credentials',
         class:'redNotif'
       }))
       setTimeout(() => {
         dispatch(clearNotif())
-        //setNotifMessage(null)
-
       }, 5000)
     }
   }
 
   const handleLike = async(blogId) => {
-    //event.preventDefault()
     const likedBlog = await blogService.getByBlogId(blogId)
     const blogToLike = {...likedBlog, likes: likedBlog.likes +1, user: likedBlog.user._id}
     await blogService.updateBlog(blogToLike)
     dispatch(setBlogs(blogs.map(b => b.id === blogId ? {...likedBlog, likes: likedBlog.likes + 1 } : b)))
-    //triggerUpdateList(blogToLike)
   }
 
   const handleCreate = (blogObject) => {
     try {
       blogService.create(blogObject)
         .then(res => {
-          //triggerUpdateList(res)
           dispatch(setBlogs(blogs.concat(res)))
-          // setNotifClass('greenNotif')
-          // setNotifMessage('Added ' + blogObject.title + ' by ' + blogObject.author + '!')
           dispatch(setNotif({
             message:'greenNotif',
             class:'Added ' + blogObject.title + ' by ' + blogObject.author + '!'
           }))
         })
         .then(setTimeout(() => {
-          //setNotifMessage(null)
           dispatch(clearNotif())
         }, 5000))
     } catch (exception) {
-      // setNotifClass('redNotif')
-      // setNotifMessage('Error Creating Blog Post')
       dispatch(setNotif({
         message:'redNotif',
         class:'Error Creating Blog Post'
       }))
       setTimeout(() => {
-        // setNotifMessage(null)
         dispatch(clearNotif())
       }, 5000)
     }
@@ -144,7 +116,6 @@ const App = () => {
     if(window.confirm("Are you sure you want to delete:"+ blogToRemove.title +"?"))
     {
       const removeBlog = await blogService.remove(blogId)
-      //triggerUpdateList(removeBlog)
       dispatch(setBlogs(blogs.filter(b => b.id !== blogId)))
       window.confirm('Blog Deleted')
     }
@@ -219,34 +190,47 @@ const App = () => {
 
   return (
     <div className="container">
+
       <Router>
+        <div>
+          <Link to="/">Home</Link>
+          <Link to="/users">Users</Link>
+
+        </div>
+
         <Switch>
           { users !== null ?
             users.map(u =>
-            <Route path={"/users/"+u.id}>
-              <UsersBlogs
-                user = {u}
-              />
+            <Route path={"/users/"+u.id} key={u.id}>
+              <UsersBlogs user = {u}/>
             </Route>) :
             null
           }
+          <Route path="/users">
+            {users !== null ?
+              <UsersPage
+              /> : null
+            }
+          </Route>
+          <Route path={"/blogs/:id"}>
+            {blogs.length !== 0 ?
+              <BlogView
+                blog={blogs[0]}
+              /> : null
+            }
 
+          </Route>
+          <Route path="/">
+            <h2>blogs</h2>
+            {notification()}
+            <div>
+              {user === null ?
+                loginForm() :
+                blogList()
+              }
+            </div>
+          </Route>
         </Switch>
-
-        <h2>blogs</h2>
-        {notification()}
-        <div>
-          {user === null ?
-            loginForm() :
-            blogList()
-          }
-        </div>
-
-        {users !== null ?
-          <UsersPage
-          /> : null
-        }
-
       </Router>
     </div>
   )

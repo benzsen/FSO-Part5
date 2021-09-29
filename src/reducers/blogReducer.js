@@ -7,7 +7,7 @@ const sortedBlog = (blogs) => blogs.sort((a,b) => b.likes-a.likes)
 const reducer = (state = [], action) => {
   switch (action.type) {
   case 'INITBLOGS':
-    return data
+    return sortedBlog(action.data)
   case 'SETBLOGS':
     return sortedBlog(action.content)
 
@@ -17,12 +17,15 @@ const reducer = (state = [], action) => {
 }
 
 export const initBlogs = () => {
-  const data = blogService.getAll().then(blogs => blogs)
-  return ({
-      type: 'INITBLOGS',
-      data
-    })
+  return async dispatch => {
+    const blogs = await blogService.getAll()
+    dispatch({
+        type: 'INITBLOGS',
+        data: blogs
+      })
+  }
 }
+
 
 export const setBlogs = (content) => (
   {
